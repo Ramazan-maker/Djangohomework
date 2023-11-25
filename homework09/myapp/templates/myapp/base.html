@@ -1,0 +1,12 @@
+{% extends 'myapp/index.html' %}
+
+{% block content %}
+    <section class="sorted-list">
+        <h2>Sorted List</h2>
+        <ol>
+            {% for item in api_data %}
+                <li>{{ item.title }}</li>
+            {% endfor %}
+        </ol>
+    </section>
+{% endblock %}
