@@ -107,8 +107,30 @@ class Bb(models.Model):
 
     # title_and_price.short_description = 'Название и цена'
 
+    @classmethod
+    def update_titles_with_id(cls):
+        # Получаем все объявления
+        all_ads = cls.objects.all()
+
+        # Цикл для изменения заголовков
+        for ad in all_ads:
+            new_title = f"{ad.title} ({ad.id})"
+            ad.title = new_title
+            ad.save()
+
+    @classmethod
+    def delete_ads_with_odd_title_digit(cls):
+        # Получаем все объявления с нечетной цифрой в заголовке
+        ads_to_delete = cls.objects.filter(title__regex=r'\d*[13579]$')
+
+        # Удаляем записи
+        ads_to_delete.delete()
+
+
+
     class Meta:
         verbose_name_plural = 'Объявления'
         verbose_name = 'Объявление'
         ordering = ['-published', 'title']
         # order_with_respect_to = 'rubric'
+
