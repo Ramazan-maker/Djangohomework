@@ -1,0 +1,6 @@
+<h2>SMS List</h2>
+<ul>
+    {% for sms in sms_list %}
+        <li>{{ sms.sender }}: {{ sms.message }}</li>
+    {% endfor %}
+</ul>
