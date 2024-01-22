@@ -1,0 +1,7 @@
+<!-- myapp/templates/record_list.html -->
+<h1>Record List</h1>
+<ul>
+  {% for record in records %}
+    <li><a href="{% url 'record_detail' pk=record.id %}">{{ record.title }}</a></li>
+  {% endfor %}
+</ul>
