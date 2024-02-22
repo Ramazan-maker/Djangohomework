@@ -16,17 +16,12 @@ def index(request):
     bbs = Bb.objects.all()
     rubrics = Rubric.objects.annotate(cnt=Count('bb')).filter(cnt__gt=0)
 
-    paginator = Paginator(bbs, 2, orphans=2)
-    # paginator = Paginator(bbs, 1, orphans=0)
+    paginator = Paginator(bbs, 2)  # Разбиваем список на страницы, показываем по 2 объявления на странице
 
-    if 'page' in request.GET:
-        page_num = request.GET['page']
-    else:
-        page_num = 1
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)  # Получаем объект страницы для текущего номера
 
-    page = paginator.get_page(page_num)
-
-    context = {'rubrics': rubrics, 'page_obj': page, 'bbs': page.object_list}
+    context = {'rubrics': rubrics, 'page_obj': page_obj}  # Передаем объект страницы в контекст
 
     return render(request, 'index.html', context)
 
@@ -83,15 +78,17 @@ class BbRedirectView(RedirectView):
 class BbByRubricView(ListView):
     template_name = 'by_rubric.html'
     context_object_name = 'bbs'
-
+    paginate_by = 10
     def get_queryset(self):
         return Bb.objects.filter(rubric=self.kwargs['rubric_id'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        page_obj = context['page_obj']
         context['rubrics'] = Rubric.objects.all()
         context['current_rubric'] = Rubric.objects.get(
             pk=self.kwargs['rubric_id'])
+        context['page_obj'] = page_obj
         return context
 
 
