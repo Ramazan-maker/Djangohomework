@@ -68,3 +68,44 @@ class PrivateMessage(Message):
 #
 #     class Meta(Message.Meta):
 #         pass
+
+
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class TitleMixin(models.Model):
+    title = models.CharField(max_length=100)
+
+    class Meta:
+        abstract = True
+
+
+class DescriptionMixin(models.Model):
+    description = models.TextField()
+
+    class Meta:
+        abstract = True
+
+
+class ImageMixin(models.Model):
+    image = models.ImageField(upload_to='images/')
+
+    class Meta:
+        abstract = True
+
+
+class Product(BaseModel, TitleMixin, DescriptionMixin, ImageMixin):
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        verbose_name = 'Product'
+        verbose_name_plural = 'Products'
+
+    def __str__(self):
+        return self.title
